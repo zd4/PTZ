@@ -53,7 +53,8 @@ public class UdpConnection
             try
             {
                 Byte[] receiveBytes = client.Receive(ref remoteIpEndPoint); // Blocks until a message returns on this socket from a remote host.
-                string returnData = Encoding.UTF8.GetString(receiveBytes);
+                //string returnData = Encoding.UTF8.GetString(receiveBytes);
+                string returnData = Encoding.UTF32.GetString(receiveBytes);
  
                 lock (incomingQueue)
                 {
@@ -99,11 +100,12 @@ public class UdpConnection
         udpClient.Send(sendBytes, sendBytes.Length, serverEndpoint);
     }
 
-    public void Send(Byte[] sendBytes)
+    public float Send(Byte[] sendBytes)
     {
         Debug.Log(String.Format("Send msg to ip:{0} port:{1} msg:{2}",senderIp,senderPort,"ByteArray"));
         IPEndPoint serverEndpoint = new IPEndPoint(IPAddress.Parse(senderIp), senderPort);
         udpClient.Send(sendBytes, sendBytes.Length, serverEndpoint);
+        return Time.time;
     }
  
     public void Stop()
