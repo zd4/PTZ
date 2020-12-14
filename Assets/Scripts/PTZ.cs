@@ -16,6 +16,7 @@ public class PTZ : MonoBehaviour
     public Text antwort;
     string[] msgARR;
 
+    const int standardgeschwindigkeit=2;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,7 +35,7 @@ if(msgARR.Length>0){
         else
         {
             //print("Antwort nach " + (Time.time - sendtime).ToString() + ": " + BitConverter.ToString(bytes));
-            antwort.text += ("\n Antwort nach " + (Time.time - sendtime).ToString() );
+            antwort.text += ("\n Antwort nach " + (Time.time - sendtime).ToString() +"\n");
             sendtime = 0f;
         }
         foreach (string message in msgARR)
@@ -84,12 +85,14 @@ if(msgARR.Length>0){
         connection.Send(VISCACommands.focusPos(i));
     }
 
-    public void ZoomTele(int speed=2)
+    public void ZoomTele(int speed=standardgeschwindigkeit)
     {
         print("Visca Tele");
         sendtime=connection.Send(VISCACommands.zoomTele(speed));
        
     }
+
+
     public void ClearText(){
         antwort.text="";
     }

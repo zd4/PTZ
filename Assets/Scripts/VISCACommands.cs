@@ -1,4 +1,4 @@
-﻿//aus https://github.com/jitenshap/SONY_VISCA_dotnet/tree/master/VISCALib
+//aus https://github.com/jitenshap/SONY_VISCA_dotnet/tree/master/VISCALib
 //angepasst für Cam1
 
 
@@ -194,5 +194,13 @@ namespace myVISCACommands
             buf[0] = CamId;
             return buf;
         }
+
+        #region panTilt
+        //Interpretationslogik außerhalb dieser Library
+
+
+
+
+        #endregion
     }
 }
