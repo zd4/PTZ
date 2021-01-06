@@ -54,8 +54,11 @@ public class UdpConnection
             {
                 Byte[] receiveBytes = client.Receive(ref remoteIpEndPoint); // Blocks until a message returns on this socket from a remote host.
                 //string returnData = Encoding.UTF8.GetString(receiveBytes);
-                string returnData = Encoding.UTF32.GetString(receiveBytes);
- 
+                //test
+                //Array.Reverse (receiveBytes);
+                //string returnData = Encoding.UTF32.GetString(receiveBytes);//"FD-FF"
+                string returnData = Encoding.UTF8.GetString(receiveBytes);//((FD-FF 42-00) mit reverse)  Antwort nach 0,09942436 FD-FF 42-00 FD-FF   Antwort ohne (neue) Anfrage:  FD-FF 52-00 FD-FF 
+ //ohne rev:  Antwort nach 0,08919263 FD-FF 41-00 FD-FF   Antwort ohne (neue) Anfrage:   FD-FF 51-00 FD-FF 
                 lock (incomingQueue)
                 {
                     incomingQueue.Enqueue(returnData);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 using myVISCACommands;
 
 public class PTZ : MonoBehaviour
@@ -15,15 +16,33 @@ public class PTZ : MonoBehaviour
     float sendtime;
     public Text antwort;
     string[] msgARR;
+public string kamerabild="http://192.168.178.88/snapshot.jpg";
+public bool laufendAktualisieren;
+
+public int fps;
+//[Tooltip("Snapshot-Auflösung von Kamera (1920x1080/960x600/480x300)")]
+public enum aufloeseung
+{
+    
+    hoch,mittel,niedrig
+}
+string[] resolution={"1920x1080","960x600","480x300"};
 
     const int standardgeschwindigkeit=2;
+
+public RawImage background;
+
     // Start is called before the first frame update
     void Start()
     {
         connection = new UdpConnection();
         connection.StartConnection(sendIp, sendPort, receivePort);
         sendtime = 0f;
-        antwort.text="System little endian?: "+BitConverter.IsLittleEndian.ToString();
+        //antwort.text="System little endian?: "+BitConverter.IsLittleEndian.ToString();
+ 
+ if(laufendAktualisieren)InvokeRepeating("TakeSnapshot",2f,1f/fps);//TODO: evtl. direktt aus Coroutine neu aufrufen
+
+
     }
 
     // Update is called once per frame
@@ -35,6 +54,7 @@ if(msgARR.Length>0){
         else
         {
             //print("Antwort nach " + (Time.time - sendtime).ToString() + ": " + BitConverter.ToString(bytes));
+            
             antwort.text += ("\n Antwort nach " + (Time.time - sendtime).ToString() +"\n");
             sendtime = 0f;
         }
@@ -46,7 +66,7 @@ if(msgARR.Length>0){
                 antwort.text+= BitConverter.ToString(bytes);
                 antwort.text+=" ";
                 //Console.WriteLine("{0,10}{1,16}", value,
-                
+                if(antwort.text!="FD-FF")Debug.Log (antwort.text);
                 
             }
             antwort.text+="\n  ";
@@ -58,6 +78,24 @@ if(msgARR.Length>0){
     {
         connection.Stop();
 
+    }
+
+public void TakeSnapshot(){
+    //background.overrideSprite=kamerabild;
+    StartCoroutine(GetTexture());
+}
+
+    IEnumerator GetTexture() {
+        UnityWebRequest www = UnityWebRequestTexture.GetTexture(kamerabild);
+        yield return www.SendWebRequest();
+
+        if(www.isNetworkError || www.isHttpError) {
+            Debug.Log(www.error);
+        }
+        else {
+            //Texture myTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+            background.texture=((DownloadHandlerTexture)www.downloadHandler).texture;
+        }
     }
 
     public void SwitchPosition(int i)
