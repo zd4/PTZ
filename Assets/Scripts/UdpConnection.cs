@@ -107,7 +107,7 @@ public class UdpConnection
 
     public float Send(Byte[] sendBytes)
     {
-        Debug.Log(String.Format("Send msg to ip:{0} port:{1} msg:{2}",senderIp,senderPort,"ByteArray"));
+    //    Debug.Log(String.Format("Send msg to ip:{0} port:{1} msg:{2}",senderIp,senderPort,"ByteArray"));
         IPEndPoint serverEndpoint = new IPEndPoint(IPAddress.Parse(senderIp), senderPort);
         udpClient.Send(sendBytes, sendBytes.Length, serverEndpoint);
         return Time.time;

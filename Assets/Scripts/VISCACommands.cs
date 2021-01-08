@@ -197,6 +197,39 @@ namespace myVISCACommands
 
         #region panTilt
         //Interpretationslogik außerhalb dieser Library
+        public static byte[] moveStop(  )
+        {                       
+            byte[] buf = { 0x80, 0x01, 0x06, 0x01,0x01,0x01,0x03,0x03, 0xff };
+            buf[0] = CamId;
+            buf[4]=0x01;//pan speed low
+            buf[5]=0x01;//tilt speed low
+            return buf;
+        }
+                public static byte[] panRight( int speed=1 )
+        {                 
+            byte[] buf = { 0x80, 0x01, 0x06, 0x01,0x01,0x01,0x02,0x03, 0xff };
+            buf[0] = CamId;
+            buf[4]=(byte)speed;//pan speed 
+            buf[5]=0x01;//tilt speed low
+            return buf;
+        }
+                  public static byte[] panLeft( int speed=1 )
+        {                 
+            byte[] buf = { 0x80, 0x01, 0x06, 0x01,0x01,0x01,0x01,0x03, 0xff };
+            buf[0] = CamId;
+            buf[4]=(byte)speed;//pan speed 
+            buf[5]=0x01;//tilt speed low
+            return buf;
+        }
+    #endregion
+    #region inquire
+    
+    public static byte[] INQ_zoom(  )
+        {
+            byte[] buf = { 0x80, 0x09, 0x04, 0x47, 0xff };
+            buf[0] = CamId;
+            return buf;
+        }
 
 
 
