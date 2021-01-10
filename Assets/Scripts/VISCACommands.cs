@@ -221,17 +221,36 @@ namespace myVISCACommands
             buf[5]=0x01;//tilt speed low
             return buf;
         }
+          public static byte[] PanTilt( int panSpeed=0,int tiltSpeed=0 )
+        {                 
+            byte[] buf = { 0x80, 0x01, 0x06, 0x01,0x00,0x00,0x00,0x00, 0xff };
+            buf[0] = CamId;
+            
+            buf[4]= (panSpeed==0) ? (byte)(0x01) : ((byte)(Math.Abs(panSpeed)));//pan speed 0x01 bis 0x18 erlaubt
+            buf[5]= (tiltSpeed==0) ? (byte)(0x01) : ((byte)(Math.Abs(tiltSpeed)));//tilt speed 0x01 bis 0x14 erlaubt
+            buf[6]=(panSpeed>0) ? (byte)(0x02) : (panSpeed<0) ?(byte)(0x01):(byte)(0x03); //pan  1 1eft 2 right 3 stop
+            buf[7]=(tiltSpeed>0) ? (byte)(0x02) : (tiltSpeed<0) ?(byte)(0x01):(byte)(0x03); //tilt 1 up 2 down 3 stop
+            return buf;
+            
+        }
+
     #endregion
     #region inquire
     
-    public static byte[] INQ_zoom(  )
+    public static byte[] INQ_Zoom(  )
         {
             byte[] buf = { 0x80, 0x09, 0x04, 0x47, 0xff };
             buf[0] = CamId;
             return buf;
         }
+        
 
-
+    public static byte[] INQ_Position(  )
+        {
+            byte[] buf = { 0x80, 0x09, 0x06, 0x12, 0xff };
+            buf[0] = CamId;
+            return buf;
+        }
 
 
         #endregion

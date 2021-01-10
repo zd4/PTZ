@@ -28,8 +28,12 @@ public class PTZ : MonoBehaviour
      float PTZtimer;
      
      public float deadZone=0.1f;
-float pan;
-float tilt;
+
+[Tooltip("Maximalgeschwindigkeit für Pan-Tilt (Joystick)")]
+[Range (1,20)]
+int maxSpeed=20;//limit für tilt 0x14=20
+public int pan;
+public int tilt;
 
     //[Tooltip("Snapshot-Auflösung von Kamera (1920x1080/960x600/480x300)")]
     aufloesung currentRes;
@@ -72,6 +76,10 @@ float tilt;
     }
     public void MoveRelative(Vector2 joystick){
         if(Time.time-PTZtimer<PTZinterval/1000f)return;
+        //leanGUI-Joystick scheint au
+
+#region alt
+      /* Methode LR angefangen. Effektiver doch in ViscaCommands!
         pan=Mathf.Clamp(joystick.x,-1,1);
         tilt=Mathf.Clamp(joystick.y,-1,1);
         if ((Mathf.Abs(pan)<deadZone)&&(+Mathf.Abs(tilt)<deadZone)) sendtime = connection.Send(VISCACommands.moveStop());//STOP
@@ -84,7 +92,16 @@ float tilt;
             //if (tilt>deadZone)print ("hoch");
             //else print ("runter");
         }
+         */
+
+#endregion
+
+        //pan=(Mathf.Abs(joystick.x)<deadZone) ? 0 : ((int)((joystick.x-deadZone)/(1-deadZone))*maxSpeed);
+        //tilt=(Mathf.Abs(joystick.y)<deadZone) ? 0 : ((int)((joystick.y-deadZone)/(1-deadZone))*maxSpeed);        
+        pan=(Mathf.Abs(joystick.x)<deadZone) ? 0 : ((int)(joystick.x*maxSpeed));
+        tilt=(Mathf.Abs(joystick.y)<deadZone) ? 0 : ((int)(joystick.y*maxSpeed));        
         
+sendtime=connection.Send(VISCACommands.PanTilt(pan,tilt));
 
         PTZtimer=Time.time;
     }
@@ -234,8 +251,15 @@ float tilt;
     {
         print("inquire Zoom");
         antwort.text = "Abfrage aktueller Zoom";
-        sendtime = connection.Send(VISCACommands.INQ_zoom());
+        sendtime = connection.Send(VISCACommands.INQ_Zoom());
     }
+public void InqPosition()
+    {
+        print("inquire Position");
+        antwort.text = "Abfrage Pan/Tilt-Position";
+        sendtime = connection.Send(VISCACommands.INQ_Position());
+    }
+
 
     public void ClearText()
     {
